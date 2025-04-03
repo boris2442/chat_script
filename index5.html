@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clone Chat</title>
+    <style>
+        /* Reset et styles globaux */
+        *,
+        ::after,
+        ::before {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        /* Conteneur principal */
+        .chat-global {
+            width: 700px;
+            height: 700px;
+            margin: 0 auto;
+            border-radius: 25px;
+            box-shadow: 0 30px 70px 0px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .chat-global {
+            background-color: #1e1e1e;
+        }
+
+        /* Barre de navigation */
+        .nav-top {
+            background: #fff;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(51, 51, 51, 0.2);
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .nav-top {
+            background-color: #333;
+        }
+
+        .location span {
+            font-size: 24px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .conversation {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .talk {
+            display: flex;
+            align-items: center;
+        }
+
+        .talk img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .talk p {
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+
+        .talk.left p {
+            margin-left: 10px;
+            background-color: #444;
+            color: #fff;
+        }
+
+        .talk.right p {
+            margin-right: 10px;
+            background-color: blue;
+            color: #fff;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: gray;
+            margin-left: 10px;
+        }
+
+        body.dark-mode .timestamp {
+            color: #bbb;
+        }
+
+        /* Formulaire de chat */
+        .chat-form {
+            height: 90px;
+            border-top: 1px solid rgba(51, 51, 51, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            background-color: #fff;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .chat-form {
+            background-color: #333;
+        }
+
+        .container-input-stuffs {
+            background-color: #f1f1f1;
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            height: 60px;
+            border-radius: 9999px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .container-input-stuffs {
+            background-color: #444;
+        }
+
+        .group-inp {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .group-inp textarea {
+            resize: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            height: 100%;
+            font-size: 15px;
+            padding: 10px;
+            border-radius: 9999px;
+            background-color: transparent;
+            color: #333;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            transition: color 0.3s;
+        }
+
+        body.dark-mode .group-inp textarea {
+            color: #fff;
+        }
+
+        .files-logo-cont {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            cursor: pointer;
+            background-color: #e0e0e0;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .files-logo-cont {
+            background-color: #555;
+        }
+
+        .files-logo-cont span {
+            font-size: 24px;
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        body.dark-mode .files-logo-cont span {
+            color: #fff;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            width: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        body.dark-mode button {
+            background-color: #555;
+        }
+
+        body.dark-mode button:hover {
+            background-color: #333;
+        }
+
+        button span {
+            font-size: 24px;
+        }
+
+        .toggle-theme {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        body.dark-mode .toggle-theme {
+            background-color: #444;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="toggle-theme" id="toggle-theme">Mode sombre</button>
+    <div class="chat-global">
+        <!-- Navigation bar -->
+        <div class="nav-top">
+            <div class="location">
+                <span>&#8592;</span> <!-- Flèche gauche -->
+                <p>Back</p>
+            </div>
+            <div class="utilisateur">
+                <p>John Doe</p>
+                <p>Active now</p>
+            </div>
+        </div>
+
+        <!-- Conversation area -->
+        <div class="conversation" id="conversation"></div>
+        <div class="typing-indicator" id="typing-indicator">L'utilisateur est en train d'écrire...</div>
+
+        <!-- Chat form -->
+        <form action="" class="chat-form" id="chat-form">
+            <div class="container-input-stuffs">
+                <div class="files-logo-cont">
+                    <span>&#128206;</span> <!-- Icône trombone -->
+                </div>
+                <div class="group-inp">
+                    <textarea placeholder="Enter your message" maxlength="1500" id="message-input"></textarea>
+                </div>
+                <button type="submit">
+                    <span>&#10148;</span> <!-- Icône flèche droite -->
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+        const conversation = document.getElementById('conversation');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const toggleTheme = document.getElementById('toggle-theme');
+
+        // Charger les messages sauvegardés
+        const savedMessages = localStorage.getItem('messages');
+        if (savedMessages) {
+            conversation.innerHTML = savedMessages;
+        }
+
+        // Ajouter un écouteur d'événement pour le formulaire
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const message = messageInput.value.trim();
+            if (message !== '') {
+                const now = new Date();
+                const time = now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
+
+                const newMessage = document.createElement('div');
+                newMessage.classList.add('talk', 'right');
+                newMessage.innerHTML = `
+                    <p>${message}</p>
+                    <span class="timestamp">${time}</span>
+                `;
+                conversation.appendChild(newMessage);
+                messageInput.value = '';
+                conversation.scrollTop = conversation.scrollHeight;
+
+                // Sauvegarder les messages
+                localStorage.setItem('messages', conversation.innerHTML);
+
+                // Réponse automatique
+                setTimeout(() => {
+                    const botResponses = [
+                        "Bonjour, comment puis-je vous aider ?",
+                        "Je suis un bot, mais je suis là pour discuter !",
+                        "Pouvez-vous répéter cela ?",
+                        "Intéressant, dites-m'en plus !"
+                    ];
+                    const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
+                    const botMessage = document.createElement('div');
+                    botMessage.classList.add('talk', 'left');
+                    botMessage.innerHTML = `
+                        <p>${randomResponse}</p>
+                        <span class="timestamp">${time}</span>
+                    `;
+                    conversation.appendChild(botMessage);
+                    conversation.scrollTop = conversation.scrollHeight;
+
+                    // Sauvegarder les messages
+                    localStorage.setItem('messages', conversation.innerHTML);
+                }, 1000);
+            }
+        });
+
+        // Détection de frappe
+        let typingTimeout;
+        messageInput.addEventListener('input', () => {
+            typingIndicator.style.display = 'block';
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                typingIndicator.style.display = 'none';
+            }, 1000);
+        });
+
+        // Mode sombre
+        toggleTheme.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+    </script>
+</body>
+
+</html>
