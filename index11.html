@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Clone Chat</title>
+  
+</head>
+
+<body>
+    <button class="toggle-theme" id="toggle-theme">Mode sombre</button>
+    <div class="chat-global">
+        <!-- Navigation bar -->
+        <div class="nav-top">
+            <div class="location">
+                <span>&#8592;</span> <!-- Flèche gauche -->
+                <p>Back</p>
+            </div>
+            <div class="utilisateur">
+                <p>John Doe</p>
+                <p>Active now</p>
+            </div>
+        </div>
+
+        <!-- Conversation area -->
+        <div class="conversation" id="conversation"></div>
+
+        <!-- Chat form -->
+        <form action="" class="chat-form" id="chat-form">
+            <div class="container-input-stuffs">
+                <div class="group-inp">
+                    <textarea placeholder="Enter your message" maxlength="1500" id="message-input"></textarea>
+                </div>
+                <button type="submit">Envoyer</button>
+            </div>
+        </form>
+    </div>
+
+<script src="script.js"></script>
+</body>
+
+</html>
